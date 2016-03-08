@@ -1,11 +1,32 @@
 from grid_class import secom_read
 import matplotlib.pyplot as plt
+import numpy as np
 
 class secom_model_boundaries(secom_read):
+    """
+    This class finds the boundaries of a model_grid file.
+    The function self.g reads the model_grid file and it is defined as:
+
+    self.g(1) = indexes in J direction
+    self.g(2) = indexes in I direction
+    self.g(3) = ?
+    self.g(4) = ?
+    self.g(5) = latitude values
+    self.g(6) = lonigitude values
+    self.g(7) = ?
+
+    Some methods of this function were inherited from secom_read class.
+    """
     def find_boundaries(self):
         """
         This function finds the indexes of the boundaries of a grid.
-        It compares cells where depth>0 (wet) and the max indexes of the cells in i and j direction
+        It takes the points which are wet in the mdodel grid.
+
+        The following indexes are written to define the boundaries for the model.
+        self.I0, self.J0, self.I1, self.J1 
+
+        self.xb : longitude of the boundaries
+        self.yb : latitude of the boundaries
         """
         #min i direction boundary
         self.I0j = self.g(0)[self.i_g_min_gre(4,0,1)][:-1] #j(i_min) indexes, where the cells are wet
@@ -31,14 +52,14 @@ class secom_model_boundaries(secom_read):
         self.J0i = self.g(1)[self.i_g_min_gre(4,0,0)][1:-1]
         self.J0  = [i.tolist() for i in [self.J0j+0, self.J0i,self.J0j+1, self.J0i]]
 
-    def find_lat_lon_boundaries(self):
+        #determines the latitude and longitude of the boundaries
         i = self.i_g_min_gre(4,0,1)+self.i_g_max_gre(4,0,1)+self.i_g_max_gre(4,0,0)
         self.xb = self.g(7)[i]
         self.yb = self.g(6)[i]
 
 
     def define_TS_boundaries_i(self):
-        #run find_boundaries before this one
+        self.find_boundaries()
         b  = [self.I0j,self.J1j,self.I1j,self.J0j]
         c  = [self.I0i,self.J1i,self.I1i,self.J0i]
         b1 = self.g_matrix_flat(b)
@@ -47,16 +68,29 @@ class secom_model_boundaries(secom_read):
 
     def define_TS_values(self,ndepths):
         """
-        run find_boundaries_i before this one.
-        This function creates a matrix TSbounds[2*ndepths columns, boundaries length] of the vertical TS on the boundaries.
+        This function creates a matrix self.TSbounds[2*ndepths columns, boundaries length]
+        of the vertical TS on the boundaries.
+
+        This matrix may receive homogenous values in:
+        a) self.define_TS_value_homog
+        b) The user may specify the values:
+            1 - boundary where I=min with crescent J 
+            2 - boundary where J=min with crescent I
+            3 - boundary where I=max with crescent J
+            4 - boundary where J=min with crescent I 
         """
-        self.n_boundaries = np.array(a.bounds_TS_i).shape[-1]
+        self.define_TS_boundaries_i()
+        self.n_boundaries = np.array(self.bounds_TS_i).shape[-1]
         self.TSbounds = np.zeros([2*ndepths,self.n_boundaries])
 
     def define_TS_values_homog(self,T,S):
+        """
+        First 15 columns of self.TSbounds: temperature
+        Last  15 columns of self.TSbounds: salinity
+        """
         for i in range(self.n_boundaries):
-            a.TSbounds[0:15,i] = T
-            a.TSbounds[15:,i]  = S
+            self.TSbounds[0:15,i] = T
+            self.TSbounds[15:,i]  = S
 
 
     def define_TS_boundaries(self):
@@ -65,19 +99,21 @@ class secom_model_boundaries(secom_read):
 
     def define_eta_boundaries_i(self):
         #self.bounds_eta_i = []
+        self.find_boundaries()
         c = map(self.g_T_flatten,[self.I0,self.J1,self.I1,self.J0])
         self.bounds_eta_i = self.g_matrix_flat(c)
 
-
-    def define_eta_values(self):
-        self.etaJ0  = (np.ones(self.J0i.shape)*0).tolist()
-        self.etaI0  = (np.ones(self.I0i.shape)*1).tolist()
-        self.etaI1  = (np.ones(self.I1i.shape)*1).tolist()
-        self.etaJ1  = (np.ones(self.J1i.shape)*1).tolist()
-
     def define_eta_boundaries(self):
+        #self.define_eta_boundaries_i()
         c = [self.etaI0,self.etaJ1,self.etaI1,self.etaJ0]
         self.etabounds = self.g_matrix_flat(c)
+
+    def define_eta_values(self):
+        self.define_eta_boundaries_i()
+        self.etaJ0  = (np.ones(self.J0i.shape)).tolist()
+        self.etaI0  = (np.ones(self.I0i.shape)).tolist()
+        self.etaI1  = (np.ones(self.I1i.shape)).tolist()
+        self.etaJ1  = (np.ones(self.J1i.shape)).tolist()
 
 
     def write_boundaries(self,x,fmto,columns):
@@ -110,7 +146,7 @@ class secom_model_boundaries(secom_read):
         self.f1.write('\nTS\n')
         for k in [0,725]:
             self.f1.write('%10.5f\n' % k)
-            for i in a.r.T:
+            for i in self.r.T:
                 self.f1.write('%5.0f' % i[0])
                 self.f1.write('%5.0f' % i[1])
                 for j in i[2:]:

@@ -1,13 +1,14 @@
 from grid_class import secom_read
+import numpy as np
 
 class secom_initial_conditions(secom_read):
-	"""This class creates init_tands"""
+    """This class creates init_tands"""
     def define_grid_cells_hor_homog(self,KSL,T,S):
-    	"""
-    	KSL: number of sigma levels
-    	T  : temperature array
-    	S  : salinity array
-    	"""
+        """
+        KSL: number of sigma levels
+        T  : temperature array
+        S  : salinity array
+        """
         self.T1 = np.ones(KSL)*T
         self.S1 = np.ones(KSL)*S
 
