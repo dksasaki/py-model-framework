@@ -18,8 +18,11 @@ class secom_read(object):
         self.g_T_flatten   = lambda x : np.array(x).T.flatten().tolist() #transpose and flat a list
         self.g_extend      = lambda g1, g2: g1.extend(g2) #extend the list g2 to list g1        #min i boundary
         self.g_matrix_flat = lambda g : [item for sublist in g for item in sublist] #flattening g = [[a],[b],[c],[d]] into [a,b,c,d]
-        self.g_shape       = lambda g: np.array(g).shape #gives the shape of a list
+        self.g_array         = lambda g: np.array(g)
+        self.g_shape       = lambda g: g_array(g).shape #gives the shape of a list
+        self.g_mask = lambda f,m : np.ma.masked_array(f,mask = [f==m])
         self.model_grid_read()
+
         pass
 
     def file(self):

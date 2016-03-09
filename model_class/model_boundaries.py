@@ -1,4 +1,4 @@
-from grid_class import secom_read
+from model_class.grid_class import secom_read
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -120,8 +120,8 @@ class secom_model_boundaries(secom_read):
         """this function is used in write_eta_boundaries"""
         for j,i in enumerate(x):
             self.f1.write(fmto % i)
-            print j
-            print len(x)
+            #print j
+            #print len(x)
             if (j+1) % columns == 0 and (j!=len(x)-1):
                 self.f1.write('\n')
 
