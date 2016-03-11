@@ -10,6 +10,4 @@ S=[36.87,36.87,36.90,36.93,36.95,36.85,36.69,36.42,35.79,35.27,34.81,
 
 
 i_cond = ic.secom_initial_conditions()
-i_cond.define_grid_cells_hor_homog(ndepths,T,S)
-i_cond.define_grid_TS_values()
-i_cond.write_init_tands()
+i_cond.write_init_tands(T,S,ndepths)

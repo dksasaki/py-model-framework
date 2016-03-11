@@ -22,11 +22,10 @@ class secom_read(object):
         self.g_shape       = lambda g: g_array(g).shape #gives the shape of a list
         self.g_mask = lambda f,m : np.ma.masked_array(f,mask = [f==m])
         self.model_grid_read()
-
         pass
 
     def file(self):
-        self.direc = input('model_grid directory: ')
+        self.direc = 'input_data/'
 
     def model_grid_read(self):
         self.file()
