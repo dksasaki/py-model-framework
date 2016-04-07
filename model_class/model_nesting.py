@@ -1,7 +1,6 @@
 import numpy as np
 from model_class.grid_class import secom_read
 from model_class.read_class import secom_read_data
-from model_class.model_boundaries import model_boundaries
 import model_class.model_boundaries as mb
 from scipy.spatial import kdtree as kd
 
