@@ -1,6 +1,8 @@
 import numpy as np
 import numpy.matlib
 import matplotlib.pyplot as plt
+import linecache
+import re
 
 
 
@@ -29,7 +31,8 @@ class secom_read(object):
 
     def model_grid_read(self):
         self.file()
-        self.f = np.genfromtxt(self.direc+'model_grid',skip_header=10).T
+        vertlev = int(re.findall('\d+',linecache.getline(self.direc+'/model_grid',3))[0])
+        self.f = np.genfromtxt(self.direc+'model_grid',skip_header=5+vertlev).T
         nx  = (self.f[0].max()+1).astype('int')
         ny  = (self.f[1].max()+1).astype('int')
         self.g   = lambda x : self.f[x].reshape(nx-2,ny-2)

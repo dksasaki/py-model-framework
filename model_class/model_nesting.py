@@ -1,7 +1,8 @@
 import numpy as np
 from model_class.grid_class import secom_read
 from model_class.read_class import secom_read_data
-import model_class.model_boundaries as mb
+from model_class.model_boundaries1 import model_boundaries
+import model_class.model_boundaries1 as mb
 from scipy.spatial import kdtree as kd
 class model_nesting(object):
     """
@@ -12,6 +13,8 @@ class model_nesting(object):
             ex: [lon,lat] = [[20,30], [21,32], [22,33]]
                 if indx = 0
                 [lon,lat][indx] --> [20,30]
+
+
 
     """
     def __init__(self):
@@ -62,17 +65,32 @@ class model_nesting(object):
          return f
 
 
-class secom(model_nesting,secom_read_data):
+class secom(model_nesting,secom_read,secom_read_data,model_boundaries):
     def __init__(self):
-         super(model_nesting, self).__init__()
-         super(secom_read_data, self).__init__()
+         model_nesting.__init__(self)
+         secom_read.__init__(self)
+         secom_read_data.__init__(self)
+         model_boundaries.__init__(self)
+         self.find_boundaries()
+        
 
     def find_boundaries(self):
-         bnd = mb.secom_model_boundaries()
-         bnd.find_boundaries()
-         self.xb = bnd.xb
-         self.yb = bnd.yb
+         self.boundaries_coordinates(self.g(1),self.g(0),self.g(7),self.g(6),self.g(4))
+         self.boundaries_grid(self.g(1),self.g(0),self.g(7),self.g(6),self.g(4))
 
+    def eta_boundaries(self,output_file):
+        print output_file
+        self.define_eta_boundaries_values()
+        self.define_eta_boundaries_i()
+        self.define_eta_boundaries()
+        self.write_eta_boundaries(output_file)
+
+    def TS_boundaries(self,ndepths,T,S,output_file):
+        self.define_TS_boundaries_i()
+        self.define_TS_values(ndepths)
+        self.define_TS_values_homog(T,S)
+        self.define_TS_boundaries()
+        self.write_TS_boundaries(output_file)
 
     def nearest_boundaries(self):
          self.nearest_boundaries_location(self.c('lon'),self.c('lat'))

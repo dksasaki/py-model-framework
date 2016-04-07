@@ -56,3 +56,26 @@ class mapa(object):
         self.parallel = [-25,-23]
         self.meridian = [-48,-46,-44]
         self.Mapa()
+
+    def Tropical_atlantic(self):
+        #boundaries - mill
+        self.lat0 = -20
+        self.lat1 = 25
+        self.lon0 = -60
+        self.lon1 = 15
+        #basemap
+        self.res  = 'l'
+        self.parallel = [-20,0,20]
+        self.meridian = [-55,-30,15]
+        self.Mapa()
+
+    def Eq_south_atlantic(self):
+        self.lat0 = -30
+        self.lat1 = 15
+        self.lon0 = -60
+        self.lon1 = 15
+        #basemap
+        self.res  = 'l'
+        self.parallel = [-40,-20,0,20]
+        self.meridian = [-45,-15,15]
+        self.Mapa()
