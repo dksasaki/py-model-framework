@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import model_class.places as pl
-import model_class.model_nesting as mn
+import model_class.secom_interface as si
 plt.close('all')
 plt.ion()
 
@@ -15,7 +15,7 @@ eta = 'eta_bound'
 
 q = lambda f,ind : [f[i[0],i[1]] for i in ind]
 
-a = mn.secom()
+a = si.secom()
 a.nearest_boundaries() #this method find the nearest points between the mother grid and the boundaries of the nested grid  
 a.boundaries_nearest_neighbors() #this method finds all the neighbors of the poinst defined by the self.neares_boundaires_location method
 
@@ -54,10 +54,11 @@ plt.colorbar()
 plt.scatter(x,y,c = np.array(bla[:,0]),vmin=20,vmax=26)
 plt.colorbar()
 
-var = np.zeros(bla.shape)
 
-for j,i in enumearte(['temp','salt']):
+var = np.zeros((a.xb.shape[0],bla.shape[1],2))
+
+for j,i in enumerate(['temp','salt']):
 	T = c.f_xr[i]
-	for k in range(bla.shape[1])
-	ginterp = interpolate.griddata((x,y),bla[:,0],(a.xb,a.yb),method='linear')
-	var[]
+	for k in range(bla.shape[1]):
+		ginterp = interpolate.griddata((x,y),bla[:,0],(a.xb,a.yb),method='linear')
+		var[:,k,j] = ginterp
