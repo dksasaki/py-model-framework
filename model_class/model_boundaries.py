@@ -1,9 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-class model_boundaries(object):
+class boundaries(object):
     def __init__(self):
-
         #boolean type grid where values >0
         self.pos_i_points = lambda dep : np.array([dep>0])
 
@@ -74,6 +73,10 @@ class model_boundaries(object):
          self.yb_i = bound[:,1] #boundaries coordinates
 
 
+class eta(boundaries):
+    def __init__(self):
+        boundaries.__init__(self)
+
     def define_eta_boundaries_i(self):
         """
         This script uses the results of self.boundaries_grid
@@ -101,7 +104,31 @@ class model_boundaries(object):
         self.etaI1  = (np.ones(self.imax.shape[0])).tolist()
         self.etaJ1  = (np.ones(self.jmax.shape[0])).tolist()
 
+    def write_boundaries(self,x,fmto,columns):
+        """this function is used in write_eta_boundaries"""
+        for j,i in enumerate(x):
+            self.f1.write(fmto % i)
+            #print j
+            #print len(x)
+            if (j+1) % columns == 0 and (j!=len(x)-1):
+                self.f1.write('\n')
 
+    def write_eta_boundaries(self,f_name):
+        print f_name
+        self.f1 = open(f_name,'w+')
+        self.f1.write("%5.0f DATA\n" % (len(self.bounds_eta_i)/4))
+        self.write_boundaries(self.bounds_eta_i,'%5.0f',16)
+        
+        for i in [0,725]:
+            self.f1.write('\n%10.5f\n' % i)
+            self.write_boundaries(self.etabounds,'%10.5f',8)
+        self.f1.close()
+
+
+
+class TS(boundaries):
+    def __init__(self):
+        boundaries.__init__(self)
 
     def define_TS_boundaries_i(self):
         self.find_boundaries()
@@ -143,28 +170,6 @@ class model_boundaries(object):
         #run define_TS_values before this one
         self.TSbounds = self.TSbounds.tolist()
 
-
-
-    def write_boundaries(self,x,fmto,columns):
-        """this function is used in write_eta_boundaries"""
-        for j,i in enumerate(x):
-            self.f1.write(fmto % i)
-            #print j
-            #print len(x)
-            if (j+1) % columns == 0 and (j!=len(x)-1):
-                self.f1.write('\n')
-
-    def write_eta_boundaries(self,f_name):
-        print f_name
-        self.f1 = open(f_name,'w+')
-        self.f1.write("%5.0f DATA\n" % (len(self.bounds_eta_i)/4))
-        self.write_boundaries(self.bounds_eta_i,'%5.0f',16)
-        
-        for i in [0,725]:
-            self.f1.write('\n%10.5f\n' % i)
-            self.write_boundaries(self.etabounds,'%10.5f',8)
-        self.f1.close()
-
     def write_TS_boundaries(self,f_name):
         q =map(np.array,[self.bounds_TS_i,self.TSbounds])
         self.r = np.concatenate((q[0],q[1]), axis = 0)
@@ -185,5 +190,3 @@ class model_boundaries(object):
         self.f1.close()
 
 
-
-    
