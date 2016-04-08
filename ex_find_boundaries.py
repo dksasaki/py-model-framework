@@ -23,10 +23,10 @@ b = pl.mapa()
 b.Embaiamento_sp()
 b.mapa.drawcoastlines()
 
-b.mapa.plot(a.g_mask(a.c('lon'),0),a.g_mask(a.c('lat'),0),'k',latlon=True) #plota grade
-b.mapa.plot(a.g_mask(a.c('lon'),0).T,a.g_mask(a.c('lat').T,0),'k',latlon=True) #plota grade
-b.mapa.plot(a.ann[0],a.ann[1],'or',latlon=True) #plota os pontos da grade grossa vizinhos aos pontos da grade fina
-b.mapa.plot(a.xb,a.yb,'m', latlon=True,linewidth=5) #plota os contornos da grade fina
+b.mapa.plot(a.g_mask(a.c('lon'),0),a.g_mask(a.c('lat'),0),c='0.5',latlon=True, zorder=1) #plota grade
+b.mapa.plot(a.g_mask(a.c('lon'),0).T,a.g_mask(a.c('lat').T,0),c='0.5',latlon=True,zorder=1) #plota grade
+#b.mapa.plot(a.ann[0],a.ann[1],'or',latlon=True) #plota os pontos da grade grossa vizinhos aos pontos da grade fina
+#b.mapa.plot(a.xb,a.yb,'m', latlon=True,linewidth=5) #plota os contornos da grade fina
 
 a.eta_boundaries(eta) #cria o arquivo eta_bound
 a.TS_boundaries(15,T,S,'homog_bound') #cria o arquivo homog_bound
@@ -36,29 +36,15 @@ a.TS_boundaries(15,T,S,'homog_bound') #cria o arquivo homog_bound
 from model_class.read_class import secom_read_data
 from scipy import interpolate
 
-plt.figure(2)
+
 c = secom_read_data()
 
 #coarser grid
 x = c.c('lon')[a.ann_i[:,0],a.ann_i[:,1]]
 y = c.c('lat')[a.ann_i[:,0],a.ann_i[:,1]]
 T = c.f_xr['temp'][0,:,:]
+S = c.f_xr['salt'][0,:,:]
 
-bla = np.array([T[:,i[0],i[1]].data for i in a.ann_i]) #T in a.ann_i sites
-
-
-ginterp = interpolate.griddata((x,y),bla[:,0],(a.xb,a.yb),method='linear')
-plt.figure(2)
-plt.scatter(a.xb,a.yb,c=ginterp,vmin=20,vmax=26)
-plt.colorbar()
-plt.scatter(x,y,c = np.array(bla[:,0]),vmin=20,vmax=26)
-plt.colorbar()
-
-
-var = np.zeros((a.xb.shape[0],bla.shape[1],2))
-
-for j,i in enumerate(['temp','salt']):
-	T = c.f_xr[i]
-	for k in range(bla.shape[1]):
-		ginterp = interpolate.griddata((x,y),bla[:,0],(a.xb,a.yb),method='linear')
-		var[:,k,j] = ginterp
+from model_class.model_boundaries import TS
+TSa = TS()
+var = TSa.interpolate_coarser2finerTS(x,y,a.xb,a.yb,T.data,S.data,a.ann_i)

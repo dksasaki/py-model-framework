@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import interpolate
 
 class boundaries(object):
     def __init__(self):
@@ -143,7 +144,6 @@ class TS(boundaries):
         """
         This function creates a matrix self.TSbounds[2*ndepths columns, boundaries length]
         of the vertical TS on the boundaries.
-
         This matrix may receive homogenous values in:
         a) self.define_TS_value_homog
         b) The user may specify the values:
@@ -164,6 +164,22 @@ class TS(boundaries):
         for i in range(self.n_boundaries):
             self.TSbounds[0:15,i] = T
             self.TSbounds[15:,i]  = S
+
+    def interpolate_coarser2finer(self,x,y,xi,yi,Var,I):
+        aux = np.array([Var[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
+        Vari = interpolate.griddata((x,y),aux[:,0],(xi,yi),method='linear')
+
+        return Vari
+
+    def interpolate_coarser2finerTS(self,x,y,xi,yi,T,S,I):
+        aux = np.array([T[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
+        var = np.zeros((xi.shape[0],aux.shape[1],2))
+        print(var.shape)
+        for j,i in enumerate([T,S]):
+            for k in range(aux.shape[1]):
+                ginterp = self.interpolate_coarser2finer(x,y,xi,yi,i,I)
+                var[:,k,j] = ginterp
+        return var
 
 
     def define_TS_boundaries(self):
@@ -188,5 +204,3 @@ class TS(boundaries):
                     self.f1.write('%5.2f' % j)
                 self.f1.write('\n')
         self.f1.close()
-
-
