@@ -2,8 +2,141 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import interpolate
 
-class boundaries(object):
+class eta(object):
+    #def __init__(self):
+    #    boundaries.__init__(self)
+
+    def define_eta_boundaries_i(self):
+        """
+        This script uses the results of self.boundaries_grid
+        """
+        #self.bounds_eta_i = []
+        #self.find_boundaries()
+        c = map(self.g_T_flatten,[self.J0,self.I0,self.J1,self.I1])
+        self.bounds_eta_i = self.g_matrix_flat(c)
+
+
+    def define_eta_boundaries(self):
+        """
+        This script uses the results of self.eta_voundaries_values
+        """
+        #self.define_eta_boundaries_i()
+        c = [self.etaJ0,self.etaI0,self.etaJ1,self.etaI1]
+        self.etabounds = self.g_matrix_flat(c)
+
+    def define_eta_boundaries_values(self):
+        """
+        This script uses the results of self.boundaries_coordinates
+        """
+        self.etaJ0  = (np.ones(self.jmin.shape[0])).tolist()
+        self.etaI0  = (np.ones(self.imin.shape[0])).tolist()
+        self.etaI1  = (np.ones(self.imax.shape[0])).tolist()
+        self.etaJ1  = (np.ones(self.jmax.shape[0])).tolist()
+
+    def write_boundaries(self,x,fmto,columns):
+        """this function is used in write_eta_boundaries"""
+        for j,i in enumerate(x):
+            self.f1.write(fmto % i)
+            #print j
+            #print len(x)
+            if (j+1) % columns == 0 and (j!=len(x)-1):
+                self.f1.write('\n')
+
+    def write_eta_boundaries(self,f_name):
+        print f_name
+        self.f1 = open(f_name,'w+')
+        self.f1.write("%5.0f DATA\n" % (len(self.bounds_eta_i)/4))
+        self.write_boundaries(self.bounds_eta_i,'%5.0f',16)
+        
+        for i in [0,725]:
+            self.f1.write('\n%10.5f\n' % i)
+            self.write_boundaries(self.etabounds,'%10.5f',8)
+        self.f1.close()
+
+
+
+class TS(object):
+    #def __init__(self):
+    #    boundaries.__init__(self)
+
+    def define_TS_boundaries_i(self):
+        #self.find_boundaries()
+        self.bounds_TS_i = [self.xb_i,self.yb_i]
+
+    def define_TS_values(self,ndepths):
+        """
+        This function creates a matrix self.TSbounds[2*ndepths columns, boundaries length]
+        of the vertical TS on the boundaries.
+        This matrix may receive homogenous values in:
+        a) self.define_TS_value_homog
+        b) The user may specify the values:
+            1 - boundary where I=min with crescent J 
+            2 - boundary where J=min with crescent I
+            3 - boundary where I=max with crescent J
+            4 - boundary where J=min with crescent I 
+        """
+        self.define_TS_boundaries_i()
+        self.n_boundaries = np.array(self.bounds_TS_i).shape[-1]
+        self.TSbounds = np.zeros([2*ndepths,self.n_boundaries])
+
+    def define_TS_values_homog(self,T,S,ndepths):
+        """
+        First 15 columns of self.TSbounds: temperature
+        Last  15 columns of self.TSbounds: salinity
+        """
+        for i in range(self.n_boundaries):
+            self.TSbounds[0:ndepths,i] = T
+            self.TSbounds[ndepths:,i]  = S
+
+    def define_TS_values_heter(self,T,S,ndepths):
+        self.define_TS_values(ndepths)
+        self.TSbounds[0:ndepths,:] = T
+        self.TSbounds[ndepths:,:]   = S
+
+    def interpolate_coarser2finer(self,x,y,xi,yi,Var,I):
+        aux = np.array([Var[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
+        Vari = interpolate.griddata((x,y),aux[:,0],(xi,yi),method='linear')
+
+        return Vari
+
+    def interpolate_coarser2finerTS(self,x,y,xi,yi,T,S,I):
+        aux = np.array([T[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
+        var = np.zeros((xi.shape[0],aux.shape[1],2))
+        print(var.shape)
+        for j,i in enumerate([T,S]):
+            for k in range(aux.shape[1]):
+                ginterp = self.interpolate_coarser2finer(x,y,xi,yi,i,I)
+                var[:,k,j] = ginterp
+        return var
+
+
+    def define_TS_boundaries(self):
+        #run define_TS_values before this one
+        self.TSbounds = self.TSbounds.tolist()
+
+    def write_TS_boundaries(self,f_name):
+        q =map(np.array,[self.bounds_TS_i,self.TSbounds])
+        self.r = np.concatenate((q[0],q[1]), axis = 0)
+        r1 = self.g_T_flatten(self.r)
+
+
+        self.f1 = open(f_name,'a+')
+        k = 0
+        self.f1.write('\nTS\n')
+        for k in [0,725]:
+            self.f1.write('%10.5f\n' % k)
+            for i in self.r.T:
+                self.f1.write('%5.0f' % i[0])
+                self.f1.write('%5.0f' % i[1])
+                for j in i[2:]:
+                    self.f1.write('%5.2f' % j)
+                self.f1.write('\n')
+        self.f1.close()
+
+class boundaries(eta,TS):
     def __init__(self):
+        eta.__init__(self)
+        TS.__init__(self)
         #boolean type grid where values >0
         self.pos_i_points = lambda dep : np.array([dep>0])
 
@@ -71,136 +204,4 @@ class boundaries(object):
 
          bound = np.array(self.jmin.tolist()+self.imin.tolist()+self.jmax.tolist()+self.imax.tolist())
          self.xb_i = bound[:,0] #boundaries coordinates
-         self.yb_i = bound[:,1] #boundaries coordinates
-
-
-class eta(boundaries):
-    def __init__(self):
-        boundaries.__init__(self)
-
-    def define_eta_boundaries_i(self):
-        """
-        This script uses the results of self.boundaries_grid
-        """
-        #self.bounds_eta_i = []
-        self.find_boundaries()
-        c = map(self.g_T_flatten,[self.J0,self.I0,self.J1,self.I1])
-        self.bounds_eta_i = self.g_matrix_flat(c)
-
-
-    def define_eta_boundaries(self):
-        """
-        This script uses the results of self.eta_voundaries_values
-        """
-        #self.define_eta_boundaries_i()
-        c = [self.etaJ0,self.etaI0,self.etaJ1,self.etaI1]
-        self.etabounds = self.g_matrix_flat(c)
-
-    def define_eta_boundaries_values(self):
-        """
-        This script uses the results of self.boundaries_coordinates
-        """
-        self.etaJ0  = (np.ones(self.jmin.shape[0])).tolist()
-        self.etaI0  = (np.ones(self.imin.shape[0])).tolist()
-        self.etaI1  = (np.ones(self.imax.shape[0])).tolist()
-        self.etaJ1  = (np.ones(self.jmax.shape[0])).tolist()
-
-    def write_boundaries(self,x,fmto,columns):
-        """this function is used in write_eta_boundaries"""
-        for j,i in enumerate(x):
-            self.f1.write(fmto % i)
-            #print j
-            #print len(x)
-            if (j+1) % columns == 0 and (j!=len(x)-1):
-                self.f1.write('\n')
-
-    def write_eta_boundaries(self,f_name):
-        print f_name
-        self.f1 = open(f_name,'w+')
-        self.f1.write("%5.0f DATA\n" % (len(self.bounds_eta_i)/4))
-        self.write_boundaries(self.bounds_eta_i,'%5.0f',16)
-        
-        for i in [0,725]:
-            self.f1.write('\n%10.5f\n' % i)
-            self.write_boundaries(self.etabounds,'%10.5f',8)
-        self.f1.close()
-
-
-
-class TS(boundaries):
-    def __init__(self):
-        boundaries.__init__(self)
-
-    def define_TS_boundaries_i(self):
-        self.find_boundaries()
-        b  = [self.imin[:,1].tolist()+self.jmax[:,1].tolist()+self.imax[:,1].tolist()+self.jmax[:,1].tolist()]
-        c  = [self.imin[:,0].tolist()+self.jmax[:,0].tolist()+self.imax[:,0].tolist()+self.jmax[:,0].tolist()]
-
-        b1 = self.g_matrix_flat(b)
-        c1 = self.g_matrix_flat(c)
-        self.bounds_TS_i = [b1,c1]
-
-    def define_TS_values(self,ndepths):
-        """
-        This function creates a matrix self.TSbounds[2*ndepths columns, boundaries length]
-        of the vertical TS on the boundaries.
-        This matrix may receive homogenous values in:
-        a) self.define_TS_value_homog
-        b) The user may specify the values:
-            1 - boundary where I=min with crescent J 
-            2 - boundary where J=min with crescent I
-            3 - boundary where I=max with crescent J
-            4 - boundary where J=min with crescent I 
-        """
-        self.define_TS_boundaries_i()
-        self.n_boundaries = np.array(self.bounds_TS_i).shape[-1]
-        self.TSbounds = np.zeros([2*ndepths,self.n_boundaries])
-
-    def define_TS_values_homog(self,T,S):
-        """
-        First 15 columns of self.TSbounds: temperature
-        Last  15 columns of self.TSbounds: salinity
-        """
-        for i in range(self.n_boundaries):
-            self.TSbounds[0:15,i] = T
-            self.TSbounds[15:,i]  = S
-
-    def interpolate_coarser2finer(self,x,y,xi,yi,Var,I):
-        aux = np.array([Var[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
-        Vari = interpolate.griddata((x,y),aux[:,0],(xi,yi),method='linear')
-
-        return Vari
-
-    def interpolate_coarser2finerTS(self,x,y,xi,yi,T,S,I):
-        aux = np.array([T[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
-        var = np.zeros((xi.shape[0],aux.shape[1],2))
-        print(var.shape)
-        for j,i in enumerate([T,S]):
-            for k in range(aux.shape[1]):
-                ginterp = self.interpolate_coarser2finer(x,y,xi,yi,i,I)
-                var[:,k,j] = ginterp
-        return var
-
-
-    def define_TS_boundaries(self):
-        #run define_TS_values before this one
-        self.TSbounds = self.TSbounds.tolist()
-
-    def write_TS_boundaries(self,f_name):
-        q =map(np.array,[self.bounds_TS_i,self.TSbounds])
-        self.r = np.concatenate((q[0],q[1]), axis = 0)
-        r1 = self.g_T_flatten(self.r)
-
-
-        self.f1 = open(f_name,'a+')
-        k = 0
-        self.f1.write('\nTS\n')
-        for k in [0,725]:
-            self.f1.write('%10.5f\n' % k)
-            for i in self.r.T:
-                self.f1.write('%5.0f' % i[0])
-                self.f1.write('%5.0f' % i[1])
-                for j in i[2:]:
-                    self.f1.write('%5.2f' % j)
-                self.f1.write('\n')
-        self.f1.close()
+         self.yb_i = bound[:,1] #boundaries boundaries_coordinates
