@@ -25,8 +25,8 @@ b.mapa.drawcoastlines()
 
 b.mapa.plot(a.g_mask(a.c('lon'),0),a.g_mask(a.c('lat'),0),c='0.5',latlon=True, zorder=1) #plota grade
 b.mapa.plot(a.g_mask(a.c('lon'),0).T,a.g_mask(a.c('lat').T,0),c='0.5',latlon=True,zorder=1) #plota grade
-#b.mapa.plot(a.ann[0],a.ann[1],'or',latlon=True) #plota os pontos da grade grossa vizinhos aos pontos da grade fina
-#b.mapa.plot(a.xb,a.yb,'m', latlon=True,linewidth=5) #plota os contornos da grade fina
+b.mapa.plot(a.ann[0],a.ann[1],'or',latlon=True) #plota os pontos da grade grossa vizinhos aos pontos da grade fina
+b.mapa.plot(a.xb,a.yb,'m', latlon=True,linewidth=5) #plota os contornos da grade fina
 
 a.eta_boundaries(eta) #cria o arquivo eta_bound
 a.TS_boundaries(15,T,S,'homog_bound') #cria o arquivo homog_bound
@@ -36,7 +36,7 @@ a.TS_boundaries(15,T,S,'homog_bound') #cria o arquivo homog_bound
 from model_class.read_class import secom_read_data
 from scipy import interpolate
 
-
+a
 c = secom_read_data()
 
 #coarser grid
@@ -45,6 +45,7 @@ y = c.c('lat')[a.ann_i[:,0],a.ann_i[:,1]]
 T = c.f_xr['temp'][0,:,:]
 S = c.f_xr['salt'][0,:,:]
 
-from model_class.model_boundaries import TS
-TSa = TS()
-var = TSa.interpolate_coarser2finerTS(x,y,a.xb,a.yb,T.data,S.data,a.ann_i)
+#from model_class.model_boundaries import boundaries 
+#bnd = boundaries()
+var = a.interpolate_coarser2finerTS(x,y,a.xb,a.yb,T.data,S.data,a.ann_i)
+a.define_TS_values_heter(var[:,:,0].T,var[:,:,1].T,5)
