@@ -1,16 +1,14 @@
 from model_class.grid_class import secom_read
 from model_class.read_class import secom_read_data
-from model_class.model_boundaries1 import eta, TS
+from model_class.model_boundaries import boundaries
 from model_class.model_nesting import model_nesting
-import model_class.model_boundaries as mb
 
-class secom(model_nesting,secom_read,secom_read_data,eta,TS):
+class secom(model_nesting,secom_read,secom_read_data,boundaries):
     def __init__(self):
          model_nesting.__init__(self)
          secom_read.__init__(self)
          secom_read_data.__init__(self)
-         eta.__init__(self)
-         TS.__init__(self)
+         boundaries.__init__(self)
          self.find_boundaries()
         
 
