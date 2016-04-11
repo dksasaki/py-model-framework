@@ -108,7 +108,7 @@ class TS(object):
         self.TSbounds[0:ndepths,:] = T
         self.TSbounds[ndepths:,:]   = S
 
-    def interpolate_coarser2finer(self,x,y,xi,yi,Var,I):
+    def interpolate_coarser2finer_3D(self,x,y,xi,yi,Var,I):
         aux = np.array([Var[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
         d   = aux.shape[1]
         print d
