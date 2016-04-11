@@ -48,10 +48,10 @@ S = c.f_xr['salt'][0,:,:,:]
 
 #from model_class.model_boundaries import boundaries 
 #bnd = boundaries()
-#var = a.interpolate_coarser2finer(x,y,a.xb,a.yb,T.data,a.ann_i)
-#var = np.append(var,a.interpolate_coarser2finer(x,y,a.xb,a.yb,S.data,a.ann_i),axis=1)
-#a.define_TS_values_heter(var[:,:5].T,var[:,5:].T,5)
-#a.write_TS_boundaries('TS_bounds')
+var = a.interpolate_coarser2finer(x,y,a.xb,a.yb,T.data,a.ann_i)
+var = np.append(var,a.interpolate_coarser2finer(x,y,a.xb,a.yb,S.data,a.ann_i),axis=1)
+a.define_TS_values_heter(var[:,:5].T,var[:,5:].T,5)
+a.write_TS_boundaries('TS_bounds')
 
 #bla = np.array([T[:,i[0],i[1]].data for i in a.ann_i]) #T in a.ann_i sites
 
