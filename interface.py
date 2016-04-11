@@ -47,7 +47,7 @@ Creates eta boundariy conditions
 """
 output_file='eta_bound'
 etab = si.secom()
-etab.eta_boundaries(output_file)
+etab.eta_boundaries_homog(output_file)
 
 etab.etaI0 = np.array(etab.etaI0)*0
 etab.etaI1 = np.array(etab.etaI1)*0
@@ -61,12 +61,4 @@ interpolates eta from gcmplt.cdf into
 model_grid boundaries
 """
 
-etab.boundaries_nearest_neighbors()
-x  = etab.c('lon')[etab.ann_i[:,0],etab.ann_i[:,1]]
-y  = etab.c('lat')[etab.ann_i[:,0],etab.ann_i[:,1]]
-eta= etab.f_xr['elev'][10,:,:]
-var = etab.interpolate_coarser2finer_eta(x,y,etab.xb,etab.yb,eta.data,etab.ann_i)
-etab.define_eta_boundaries_heter(var)
-etab.define_eta_boundaries_i()
-
-etab.write_eta_boundaries(output_file)
+etab.boundaries_nearest_neighbors('eta_bound')
