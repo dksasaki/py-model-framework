@@ -95,19 +95,22 @@ class TS(object):
 
     def interpolate_coarser2finer(self,x,y,xi,yi,Var,I):
         aux = np.array([Var[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
-        Vari = interpolate.griddata((x,y),aux[:,0],(xi,yi),method='linear')
+        d   = aux.shape[1]
+        Vari= np.zeros((xi.shape[0],d))
+        for i in range(d):
+            Vari[:,i] = interpolate.griddata((x,y),aux[:,i],(xi,yi),method='linear')
 
         return Vari
 
-    def interpolate_coarser2finerTS(self,x,y,xi,yi,T,S,I):
-        aux = np.array([T[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
-        var = np.zeros((xi.shape[0],aux.shape[1],2))
-        print(var.shape)
-        for j,i in enumerate([T,S]):
-            for k in range(aux.shape[1]):
-                ginterp = self.interpolate_coarser2finer(x,y,xi,yi,i,I)
-                var[:,k,j] = ginterp
-        return var
+    #def interpolate_coarser2finerTS(self,x,y,xi,yi,T,S,I):
+    #    aux = np.array([T[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
+    #    var = np.zeros((xi.shape[0],aux.shape[1],2))
+    #    print(var.shape)
+    #    for j,i in enumerate([T,S]):
+    #        for k in range(aux.shape[1]):
+    #            ginterp = self.interpolate_coarser2finer(x,y,xi,yi,i,I)
+    #            var[:,k,j] = ginterp
+    #    return var
 
 
     def define_TS_boundaries(self):
@@ -126,10 +129,12 @@ class TS(object):
         for k in [0,725]:
             self.f1.write('%10.5f\n' % k)
             for i in self.r.T:
+                #print('%5.0f,%5.0f' % (i[0],i[1]))
                 self.f1.write('%5.0f' % i[0])
                 self.f1.write('%5.0f' % i[1])
                 for j in i[2:]:
                     self.f1.write('%5.2f' % j)
+                    #print('%5.2f' % j)
                 self.f1.write('\n')
         self.f1.close()
 
