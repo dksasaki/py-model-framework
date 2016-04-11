@@ -11,10 +11,14 @@ class secom_read_data(object):
     d   = depth index
     var = variable/coordinate name (string format)
     """
-    def __init__(self):
-        self.f = xr.open_dataset('/home/otel/Dropbox/trabalho_irado/Doutorado/MODEL/RESULTS/gcmplt.cdf')
-        self.c = lambda var :     self.f[var].data #coordinates
-        self.v = lambda t,d,var : self.f[var].data[t,d,:,:]
-        self.g_mask = lambda f,m : np.ma.masked_array(f,mask = [f==m])
-       
 
+    def __init__(self):
+        self.f_xr = xr.open_dataset('/home/otel/Dropbox/trabalho_irado/Doutorado/MODEL/RESULTS/gcmplt.cdf')
+        self.c = lambda var :     self.f_xr[var].data #coordinates
+        self.v = lambda t,d,var : self.f_xr[var][t,d,:,:].data
+        self.g_mask = lambda f,m : np.ma.masked_array(f,mask = [f==m])
+        self.v_sb_smpl = lambda t,d,lon,lat,var : self.f_xr[var][t,d,:,:][lat,:][:,lon].data
+        self.v_smpl_mrg= lambda f1,f2,ax : np.concatenate(f1,f2,axis=ax)
+        
+    
+        

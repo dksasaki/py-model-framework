@@ -1,76 +1,72 @@
-from model_class.grid_class import secom_read
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import interpolate
 
-class secom_model_boundaries(secom_read):
-    """
-    This class finds the boundaries of a model_grid file.
-    The function self.g reads the model_grid file and it is defined as:
+class eta(object):
+    #def __init__(self):
+    #    boundaries.__init__(self)
 
-    self.g(1) = indexes in J direction
-    self.g(2) = indexes in I direction
-    self.g(3) = ?
-    self.g(4) = ?
-    self.g(5) = latitude values
-    self.g(6) = lonigitude values
-    self.g(7) = ?
-
-    Some methods of this function were inherited from secom_read class.
-    """
-    def find_boundaries(self):
+    def define_eta_boundaries_i(self):
         """
-        This function finds the indexes of the boundaries of a grid.
-        It takes the points which are wet in the mdodel grid.
-
-        The following indexes are written to define the boundaries for the model.
-        self.I0, self.J0, self.I1, self.J1 
-
-        self.xb : longitude of the boundaries
-        self.yb : latitude of the boundaries
+        This script uses the results of self.boundaries_grid
         """
-        #min i direction boundary
-        self.I0j = self.g(0)[self.i_g_min_gre(4,0,1)][:-1] #j(i_min) indexes, where the cells are wet
-        self.I0i = self.g(1)[self.i_g_min_gre(4,0,1)][:-1] #i(i_min) indexes, where the cells are wet
-        self.I0  = [i.tolist() for i in [self.I0j,self.I0i+0,self.I0j,self.I0i+1]] 
-        plt.plot(self.g(7)[self.i_g_min_gre(4,0,1)],self.g(6)[self.i_g_min_gre(4,0,1)])
-
-        #max j direction boundary
-        self.J1j = self.g(0)[self.i_g_max_gre(4,0,0)][1:-1]
-        self.J1i = self.g(1)[self.i_g_max_gre(4,0,0)][1:-1]
-        self.J1  = [i.tolist() for i in [self.J1j-0,self.J1i,self.J1j-1,self.J1i]]
-        plt.plot(self.g(7)[self.i_g_max_gre(4,0,0)][1:-1],self.g(6)[self.i_g_max_gre(4,0,0)][1:-1])
-
-        #max i direction boundary
-        self.I1j = self.g(0)[self.i_g_max_gre(4,0,1)][:-1]
-        self.I1i = self.g(1)[self.i_g_max_gre(4,0,1)][:-1]
-        self.I1  = [i.tolist() for i in [self.I1j,self.I1i-0,self.I1j,self.I1i-1]]
-        plt.plot(self.g(7)[self.i_g_max_gre(4,0,1)],self.g(6)[self.i_g_max_gre(4,0,1)])
+        #self.bounds_eta_i = []
+        #self.find_boundaries()
+        c = map(self.g_T_flatten,[self.J0,self.I0,self.J1,self.I1])
+        self.bounds_eta_i = self.g_matrix_flat(c)
 
 
-        #min j direction boundary #!MAY NEED REVIEW
-        self.J0j = self.g(0)[self.i_g_min_gre(4,0,0)][1:-1]
-        self.J0i = self.g(1)[self.i_g_min_gre(4,0,0)][1:-1]
-        self.J0  = [i.tolist() for i in [self.J0j+0, self.J0i,self.J0j+1, self.J0i]]
+    def define_eta_boundaries(self):
+        """
+        This script uses the results of self.eta_voundaries_values
+        """
+        #self.define_eta_boundaries_i()
+        c = [self.etaJ0,self.etaI0,self.etaJ1,self.etaI1]
+        self.etabounds = self.g_matrix_flat(c)
 
-        #determines the latitude and longitude of the boundaries
-        i = self.i_g_min_gre(4,0,1)+self.i_g_max_gre(4,0,1)+self.i_g_max_gre(4,0,0)
-        self.xb = self.g(7)[i]
-        self.yb = self.g(6)[i]
+    def define_eta_boundaries_values(self):
+        """
+        This script uses the results of self.boundaries_coordinates
+        """
+        self.etaJ0  = (np.ones(self.jmin.shape[0])).tolist()
+        self.etaI0  = (np.ones(self.imin.shape[0])).tolist()
+        self.etaI1  = (np.ones(self.imax.shape[0])).tolist()
+        self.etaJ1  = (np.ones(self.jmax.shape[0])).tolist()
 
+    def write_boundaries(self,x,fmto,columns):
+        """this function is used in write_eta_boundaries"""
+        for j,i in enumerate(x):
+            self.f1.write(fmto % i)
+            #print j
+            #print len(x)
+            if (j+1) % columns == 0 and (j!=len(x)-1):
+                self.f1.write('\n')
+
+    def write_eta_boundaries(self,f_name):
+        print f_name
+        self.f1 = open(f_name,'w+')
+        self.f1.write("%5.0f DATA\n" % (len(self.bounds_eta_i)/4))
+        self.write_boundaries(self.bounds_eta_i,'%5.0f',16)
+        
+        for i in [0,725]:
+            self.f1.write('\n%10.5f\n' % i)
+            self.write_boundaries(self.etabounds,'%10.5f',8)
+        self.f1.close()
+
+
+
+class TS(object):
+    #def __init__(self):
+    #    boundaries.__init__(self)
 
     def define_TS_boundaries_i(self):
-        self.find_boundaries()
-        b  = [self.I0j,self.J1j,self.I1j,self.J0j]
-        c  = [self.I0i,self.J1i,self.I1i,self.J0i]
-        b1 = self.g_matrix_flat(b)
-        c1 = self.g_matrix_flat(c)
-        self.bounds_TS_i = [b1,c1]
+        #self.find_boundaries()
+        self.bounds_TS_i = [self.xb_i,self.yb_i]
 
     def define_TS_values(self,ndepths):
         """
         This function creates a matrix self.TSbounds[2*ndepths columns, boundaries length]
         of the vertical TS on the boundaries.
-
         This matrix may receive homogenous values in:
         a) self.define_TS_value_homog
         b) The user may specify the values:
@@ -83,57 +79,43 @@ class secom_model_boundaries(secom_read):
         self.n_boundaries = np.array(self.bounds_TS_i).shape[-1]
         self.TSbounds = np.zeros([2*ndepths,self.n_boundaries])
 
-    def define_TS_values_homog(self,T,S):
+    def define_TS_values_homog(self,T,S,ndepths):
         """
         First 15 columns of self.TSbounds: temperature
         Last  15 columns of self.TSbounds: salinity
         """
         for i in range(self.n_boundaries):
-            self.TSbounds[0:15,i] = T
-            self.TSbounds[15:,i]  = S
+            self.TSbounds[0:ndepths,i] = T
+            self.TSbounds[ndepths:,i]  = S
+
+    def define_TS_values_heter(self,T,S,ndepths):
+        self.define_TS_values(ndepths)
+        self.TSbounds[0:ndepths,:] = T
+        self.TSbounds[ndepths:,:]   = S
+
+    def interpolate_coarser2finer(self,x,y,xi,yi,Var,I):
+        aux = np.array([Var[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
+        d   = aux.shape[1]
+        Vari= np.zeros((xi.shape[0],d))
+        for i in range(d):
+            Vari[:,i] = interpolate.griddata((x,y),aux[:,i],(xi,yi),method='linear')
+
+        return Vari
+
+    #def interpolate_coarser2finerTS(self,x,y,xi,yi,T,S,I):
+    #    aux = np.array([T[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
+    #    var = np.zeros((xi.shape[0],aux.shape[1],2))
+    #    print(var.shape)
+    #    for j,i in enumerate([T,S]):
+    #        for k in range(aux.shape[1]):
+    #            ginterp = self.interpolate_coarser2finer(x,y,xi,yi,i,I)
+    #            var[:,k,j] = ginterp
+    #    return var
 
 
     def define_TS_boundaries(self):
         #run define_TS_values before this one
         self.TSbounds = self.TSbounds.tolist()
-
-    def define_eta_boundaries_i(self):
-        #self.bounds_eta_i = []
-        self.find_boundaries()
-        c = map(self.g_T_flatten,[self.I0,self.J1,self.I1,self.J0])
-        self.bounds_eta_i = self.g_matrix_flat(c)
-
-    def define_eta_boundaries(self):
-        #self.define_eta_boundaries_i()
-        c = [self.etaI0,self.etaJ1,self.etaI1,self.etaJ0]
-        self.etabounds = self.g_matrix_flat(c)
-
-    def define_eta_values(self):
-        self.define_eta_boundaries_i()
-        self.etaJ0  = (np.ones(self.J0i.shape)).tolist()
-        self.etaI0  = (np.ones(self.I0i.shape)).tolist()
-        self.etaI1  = (np.ones(self.I1i.shape)).tolist()
-        self.etaJ1  = (np.ones(self.J1i.shape)).tolist()
-
-
-    def write_boundaries(self,x,fmto,columns):
-        """this function is used in write_eta_boundaries"""
-        for j,i in enumerate(x):
-            self.f1.write(fmto % i)
-            #print j
-            #print len(x)
-            if (j+1) % columns == 0 and (j!=len(x)-1):
-                self.f1.write('\n')
-
-    def write_eta_boundaries(self,f_name):
-        self.f1 = open(f_name,'w+')
-        self.f1.write("%5.0f DATA\n" % (len(self.bounds_eta_i)/4))
-        self.write_boundaries(self.bounds_eta_i,'%5.0f',16)
-        
-        for i in [0,725]:
-            self.f1.write('\n%10.5f\n' % i)
-            self.write_boundaries(self.etabounds,'%10.5f',8)
-        self.f1.close()
 
     def write_TS_boundaries(self,f_name):
         q =map(np.array,[self.bounds_TS_i,self.TSbounds])
@@ -147,9 +129,84 @@ class secom_model_boundaries(secom_read):
         for k in [0,725]:
             self.f1.write('%10.5f\n' % k)
             for i in self.r.T:
+                #print('%5.0f,%5.0f' % (i[0],i[1]))
                 self.f1.write('%5.0f' % i[0])
                 self.f1.write('%5.0f' % i[1])
                 for j in i[2:]:
                     self.f1.write('%5.2f' % j)
+                    #print('%5.2f' % j)
                 self.f1.write('\n')
         self.f1.close()
+
+class boundaries(eta,TS):
+    def __init__(self):
+        eta.__init__(self)
+        TS.__init__(self)
+        #boolean type grid where values >0
+        self.pos_i_points = lambda dep : np.array([dep>0])
+
+        #boolean type grid where values equals max and min value
+        self.max_i_points = lambda  indx : np.array([indx == indx.max()])
+        self.min_i_points = lambda  indx : np.array([indx == indx.min()])
+
+        #boolean type grid where values >0 and equals max and min values 
+        self.comb_max_pos = lambda indx, dep : (self.pos_i_points(dep)*self.max_i_points(indx)).squeeze()
+        self.comb_min_pos = lambda indx, dep : (self.pos_i_points(dep)*self.min_i_points(indx)).squeeze()
+
+        #var grid with values >0 and equals max and min values
+        self.wet_bound_max_points =lambda var,indx,dep : var[self.comb_max_pos(indx,dep)]
+        self.wet_bound_min_points =lambda var,indx,dep : var[self.comb_min_pos(indx,dep)]
+
+        #var grid with values >0 and equals max and min values, considering var1 and var2 indexes
+        self.direc_max_bound = lambda var1,var2,indx,dep : np.array(zip(self.wet_bound_max_points(var1,indx,dep), \
+                                                    self.wet_bound_max_points(var2,indx,dep)))
+        self.direc_min_bound = lambda var1,var2,indx,dep : np.array(zip(self.wet_bound_min_points(var1,indx,dep), \
+                                                    self.wet_bound_min_points(var2,indx,dep)))
+
+        #flattening g = [[a],[b],[c],[d]] into [a,b,c,d]
+        self.g_matrix_flat = lambda g : [item for sublist in g for item in sublist] 
+
+
+    def boundaries(self,direc,c,d):
+         if direc.size == 0:
+             index = []
+         else:
+            index = [i.tolist() for i in [direc[:,1],direc[:,0],direc[:,1]+c,direc[:,0]+d]]
+         return index
+
+    def boundaries_grid(self,im,jn,lon,lat,dep):
+        #creates the "boundary grid"
+         self.Imax = self.direc_max_bound(im,jn,im,dep).astype('int')
+         self.Jmax = self.direc_max_bound(im,jn,jn,dep).astype('int')
+         self.Imin = self.direc_min_bound(im,jn,im,dep).astype('int')
+         self.Jmin = self.direc_min_bound(im,jn,jn,dep).astype('int')
+
+         self.I1 = self.boundaries(self.Imax,0,1) #boundaries grid coordinate
+         self.J1 = self.boundaries(self.Jmax,-1,0) #boundaries grid coordinate
+         self.I0 = self.boundaries(self.Imin,0,-1) #boundaries grid coordinate
+         self.J0 = self.boundaries(self.Jmin,1,0) #boundaries grid coordinate
+
+    def boundaries_coordinates(self,im,jn,lon,lat,dep):
+        #boundaries coordinates [lon,lat] values
+         self.xmax = self.direc_max_bound(lon,lat,im,dep)
+         self.ymax = self.direc_max_bound(lon,lat,jn,dep)
+         self.xmin = self.direc_min_bound(lon,lat,im,dep)
+         self.ymin = self.direc_min_bound(lon,lat,jn,dep)
+
+         self.imax = self.direc_max_bound(im,jn,im,dep) #boundaries indexes
+         self.jmax = self.direc_max_bound(im,jn,jn,dep) #boundaries indexes
+         self.imin = self.direc_min_bound(im,jn,im,dep) #boundaries indexes
+         self.jmin = self.direc_min_bound(im,jn,jn,dep) #boundaries indexes
+
+         print self.ymin
+         for i in [self.xmax,self.ymax,self.xmin,self.ymin]:
+            if i.sum() != 0:
+                 plt.plot(i[:,0], i[:,1],'.')
+
+         bound = np.array(self.ymin.tolist()+self.xmin.tolist()+self.ymax.tolist()+self.xmax.tolist())
+         self.xb = bound[:,0] #boundaries coordinates
+         self.yb = bound[:,1] #boundaries coordinates
+
+         bound = np.array(self.jmin.tolist()+self.imin.tolist()+self.jmax.tolist()+self.imax.tolist())
+         self.xb_i = bound[:,0] #boundaries coordinates
+         self.yb_i = bound[:,1] #boundaries boundaries_coordinates

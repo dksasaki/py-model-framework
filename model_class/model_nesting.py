@@ -3,6 +3,8 @@ from model_class.grid_class import secom_read
 from model_class.read_class import secom_read_data
 import model_class.model_boundaries as mb
 from scipy.spatial import kdtree as kd
+
+
 class model_nesting(object):
     """
     lon : mxn numpy matrix
@@ -12,6 +14,8 @@ class model_nesting(object):
             ex: [lon,lat] = [[20,30], [21,32], [22,33]]
                 if indx = 0
                 [lon,lat][indx] --> [20,30]
+
+
 
     """
     def __init__(self):
@@ -61,22 +65,3 @@ class model_nesting(object):
 
          return f
 
-
-class secom(model_nesting,secom_read_data):
-    def __init__(self):
-         super(model_nesting, self).__init__()
-         super(secom_read_data, self).__init__()
-
-    def find_boundaries(self):
-         bnd = mb.secom_model_boundaries()
-         bnd.find_boundaries()
-         self.xb = bnd.xb
-         self.yb = bnd.yb
-
-
-    def nearest_boundaries(self):
-         self.nearest_boundaries_location(self.c('lon'),self.c('lat'))
-
-    def boundaries_nearest_neighbors(self):
-         self.all_neigbours_nearest_i_bl(self.mdi,self.c('xpos'))
-         self.all_neigbours_nearest_bl(self.c('lon'),self.c('lat'))

@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import model_class.model_boundaries as mb
 
+#this script writes vertically stratified and horizontally
+#homogeneous bound for a given model_grid
+
 output_file = 'homog_bound'
 ndepths = 15
 T=[27.59,27.59,26.88,25.57,23.02,21.76,20.26,18.73,15.99,12.43,
@@ -14,4 +17,4 @@ plt.ion()
 bound = mb.secom_model_boundaries()
 bound.define_TS_values(ndepths) #create the boundaries matrix
 bound.define_TS_values_homog(T,S) #create boundaries horizontally constant and with depth variation
-bound.write_TS_boundaries(output_file)
+bound.write_TS_boundaries(output_file) #write homog_bound file

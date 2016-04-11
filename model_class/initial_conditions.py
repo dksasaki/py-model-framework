@@ -22,7 +22,7 @@ class secom_initial_conditions(secom_read):
     """
 
     def __init__(self):
-        super(secom_initial_conditions, self).__init__()
+        secom_read.__init__(self)
         self.depth_homog = lambda T,KSL: np.ones(KSL)*T
         self.init_var = lambda T,KSL,m,n : np.matlib.repmat(self.depth_homog(T,KSL),m+2,n+2).reshape(m+2,n+2,len(self.depth_homog(T,KSL))) #2 is summed in order to compensate the -2 in self.g
 
