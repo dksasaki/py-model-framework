@@ -16,13 +16,22 @@ class eta(object):
         self.bounds_eta_i = self.g_matrix_flat(c)
 
 
-    def define_eta_boundaries(self):
+    def define_eta_boundaries_homog(self):
         """
-        This script uses the results of self.eta_voundaries_values
+        This script uses the results of self.eta_boundaries_values
         """
         #self.define_eta_boundaries_i()
         c = [self.etaJ0,self.etaI0,self.etaJ1,self.etaI1]
         self.etabounds = self.g_matrix_flat(c)
+
+    def define_eta_boundaries_heter(self,var):
+        """
+        This script uses the results of self.eta_boundaries_values
+        """
+        #self.define_eta_boundaries_i()
+        c = [self.etaJ0,self.etaI0,self.etaJ1,self.etaI1]
+        self.etabounds = var
+
 
     def define_eta_boundaries_values(self):
         """
@@ -52,6 +61,12 @@ class eta(object):
             self.f1.write('\n%10.5f\n' % i)
             self.write_boundaries(self.etabounds,'%10.5f',8)
         self.f1.close()
+
+    def interpolate_coarser2finer_2D(self,x,y,xi,yi,Var,I):
+        aux = np.array([Var[i[0],i[1]] for i in I]) #T in a.ann_i sites
+        Vari = interpolate.griddata((x,y),aux,(xi,yi),method='linear')
+
+        return Vari
 
 
 
@@ -96,6 +111,7 @@ class TS(object):
     def interpolate_coarser2finer(self,x,y,xi,yi,Var,I):
         aux = np.array([Var[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
         d   = aux.shape[1]
+        print d
         Vari= np.zeros((xi.shape[0],d))
         for i in range(d):
             Vari[:,i] = interpolate.griddata((x,y),aux[:,i],(xi,yi),method='linear')
