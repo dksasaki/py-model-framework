@@ -111,7 +111,7 @@ class TS(object):
     def interpolate_coarser2finer_3D(self,x,y,xi,yi,Var,I):
         aux = np.array([Var[:,i[0],i[1]] for i in I]) #T in a.ann_i sites
         d   = aux.shape[1]
-        print d
+        print aux
         Vari= np.zeros((xi.shape[0],d))
         for i in range(d):
             Vari[:,i] = interpolate.griddata((x,y),aux[:,i],(xi,yi),method='linear')
@@ -146,8 +146,8 @@ class TS(object):
             self.f1.write('%10.5f\n' % k)
             for i in self.r.T:
                 #print('%5.0f,%5.0f' % (i[0],i[1]))
-                self.f1.write('%5.0f' % i[0])
                 self.f1.write('%5.0f' % i[1])
+                self.f1.write('%5.0f' % i[0])
                 for j in i[2:]:
                     self.f1.write('%5.2f' % j)
                     #print('%5.2f' % j)
@@ -197,9 +197,9 @@ class boundaries(eta,TS):
          self.Imin = self.direc_min_bound(im,jn,im,dep).astype('int')
          self.Jmin = self.direc_min_bound(im,jn,jn,dep).astype('int')
 
-         self.I1 = self.boundaries(self.Imax,0,1) #boundaries grid coordinate
+         self.I1 = self.boundaries(self.Imax,0,-1) #boundaries grid coordinate
          self.J1 = self.boundaries(self.Jmax,-1,0) #boundaries grid coordinate
-         self.I0 = self.boundaries(self.Imin,0,-1) #boundaries grid coordinate
+         self.I0 = self.boundaries(self.Imin,0,1) #boundaries grid coordinate
          self.J0 = self.boundaries(self.Jmin,1,0) #boundaries grid coordinate
 
     def boundaries_coordinates(self,im,jn,lon,lat,dep):
