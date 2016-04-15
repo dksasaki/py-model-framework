@@ -1,7 +1,6 @@
 import numpy as np
-from model_class.grid_class import secom_read
-from model_class.read_class import secom_read_data
-import model_class.model_boundaries as mb
+from model_class.read_class import secom_model_grid, secom_nc
+import model_class.boundaries as mb
 from scipy.spatial import kdtree as kd
 
 
@@ -27,15 +26,15 @@ class model_nesting(object):
         pass
 
 
-    def nearest_boundaries_location(self,lon,lat):
-        """
-        This method find the nearest points between the mother grid and the boundaries of the nested grid.
-        """
-        mdgrd =  np.array(zip( lon.ravel(),lat.ravel() ))
-        kdt = kd.KDTree(mdgrd)
-        self.mdi_dist, self.mdi = kdt.query(np.array(zip( self.xb,self.yb)) )
+    #def nearest_boundaries_location(self,lon,lat):
+    #    """
+    #    This method find the nearest points between the mother grid and the boundaries of the nested grid.
+    #    """
+    #    mdgrd =  np.array(zip( lon.ravel(),lat.ravel() ))
+    #    kdt = kd.KDTree(mdgrd)
+    #    self.mdi_dist, self.mdi = kdt.query(np.array(zip( self.xb,self.yb)) )
 
-    def nearest_boundaries_location2(self,x,y,xi,yi):
+    def nearest_boundaries_location(self,x,y,xi,yi):
         """
         This method find the nearest points between the mother grid and the boundaries of the nested grid.
         """
@@ -73,4 +72,3 @@ class model_nesting(object):
          f = np.array([[i[0],i[1]] for i in  e])
 
          return f
-
