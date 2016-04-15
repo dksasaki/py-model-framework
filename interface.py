@@ -83,12 +83,12 @@ class TS_boundaries(TS_interface,secom_nc,model_nesting,interpolations):
         self.define_TS_boundaries_i()
         self.define_TS_values(ndepths)
         self.define_TS_boundaries()
-        T = np.ones(ndepths)*20
+        T = np.ones(ndepths)*20 
         S = np.ones(ndepths)*35
         self.TBDRYSL, self.SBDRYSL = self.define_TS_values_homog(T,S,ndepths)
 
         self.write_TS_boundaries(self.ITAS,self.JTAS,self.TBDRYSL, self.SBDRYSL)
-
+        self.file_close()
 
 class TS_initial_conditions(init_tands_interface,interpolations,secom_nc,secom_model_grid):
     def __init__(self):
