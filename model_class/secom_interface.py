@@ -71,6 +71,22 @@ class TS_interface(boundaries,data_group_f_2):
         self.JTAS = self.yb_i
 
 
+    def define_TS_values_homog(self,T,S,ndepths):
+        """
+        First 15 columns of self.TSbounds: temperature
+        Last  15 columns of self.TSbounds: salinity
+        """
+        self.TSbounds = np.array(self.TSbounds)
+        for i in range(self.n_boundaries):
+            self.TSbounds[0:ndepths,i] = T
+            self.TSbounds[ndepths:,i]  = S
+
+        self.TSbounds.tolist()
+
+        TBDRYSL = self.TSbounds[0:ndepths,:].T
+        SBDRYSL = self.TSbounds[ndepths:,:].T
+
+        return TBDRYSL, SBDRYSL
 
     def define_TS_values(self,ndepths):
         """
