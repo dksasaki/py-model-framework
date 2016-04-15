@@ -40,10 +40,10 @@ class eta(eta_interface,model_nesting,interpolations,secom_nc):
     def eta_values_homog(self):
         """ """
 
-        self.etaI1 = self.etaI1*0
-        self.etaJ1 = self.etaJ1*0
-        self.etaI0 = self.etaI1*0
-        self.etaJ1 = self.etaJ1*0
+        self.etaI1 = np.array(self.etaI1)*0
+        self.etaJ1 = np.array(self.etaJ1)*0
+        self.etaI0 = np.array(self.etaI1)*0
+        self.etaJ1 = np.array(self.etaJ1)*0
         self.define_eta_boundaries_array_i() # self.EBDRY is defined here
         for i in [0,725]:
             self.eta_boundaries_values(self.EBDRY,[i])
@@ -61,7 +61,7 @@ class TS_boundaries(TS_interface,secom_nc,model_nesting,interpolations):
     def TS_values(self):
         x = self.c('lon')[self.ann_i[:,0],self.ann_i[:,1]]
         y = self.c('lat')[self.ann_i[:,0],self.ann_i[:,1]]
-        z = a.f_xr['layer_bnds'].data
+        z = self.f_xr['layer_bnds'].data
         T = self.f_xr['temp'][0,:,:,:]
         S = self.f_xr['salt'][0,:,:,:]
         nz= self.sig_lev
@@ -78,6 +78,16 @@ class TS_boundaries(TS_interface,secom_nc,model_nesting,interpolations):
          self.nearest_boundaries_location(self.c('lon'),self.c('lat'),self.xb,self.yb)
          self.all_neigbours_nearest_i_bl(self.mdi,self.c('xpos'))
          self.all_neigbours_nearest_bl(self.c('lon'),self.c('lat'))
+
+    def TS_values_homog(self,ndepths):
+        self.define_TS_boundaries_i()
+        self.define_TS_values(ndepths)
+        self.define_TS_boundaries()
+        T = np.ones(ndepths)*20
+        S = np.ones(ndepths)*35
+        self.TBDRYSL, self.SBDRYSL = self.define_TS_values_homog(T,S,ndepths)
+
+        self.write_TS_boundaries(self.ITAS,self.JTAS,self.TBDRYSL.T, self.SBDRYSL.T)
 
 
 class TS_initial_conditions(init_tands_interface,interpolations,secom_nc,secom_model_grid):
