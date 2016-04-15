@@ -1,7 +1,6 @@
 import numpy as np
-from model_class.grid_class import secom_read
-from model_class.read_class import secom_read_data
-import model_class.model_boundaries as mb
+from model_class.read_class import secom_model_grid, secom_nc
+import model_class.boundaries as mb
 from scipy.spatial import kdtree as kd
 
 
@@ -27,18 +26,27 @@ class model_nesting(object):
         pass
 
 
-    def nearest_boundaries_location(self,lon,lat):
+    #def nearest_boundaries_location(self,lon,lat):
+    #    """
+    #    This method find the nearest points between the mother grid and the boundaries of the nested grid.
+    #    """
+    #    mdgrd =  np.array(zip( lon.ravel(),lat.ravel() ))
+    #    kdt = kd.KDTree(mdgrd)
+    #    self.mdi_dist, self.mdi = kdt.query(np.array(zip( self.xb,self.yb)) )
+
+    def nearest_boundaries_location(self,x,y,xi,yi):
         """
         This method find the nearest points between the mother grid and the boundaries of the nested grid.
         """
-        mdgrd =  np.array(zip( lon.ravel(),lat.ravel() ))
+        mdgrd =  np.array(zip( x.ravel(),y.ravel() ))
         kdt = kd.KDTree(mdgrd)
-        self.mdi_dist, self.mdi = kdt.query(np.array(zip( self.xb,self.yb)) )
+        self.mdi_dist, self.mdi = kdt.query(np.array(zip( xi, yi) ))
+
 
     def all_neigbours_nearest_i_bl(self,indx,im):
          """
          This method finds all the neighbors of the poinst defined by the self.nearest_boundaries_location method.
-         It defines the self.ann - lon,lat of the neighbor points to the nearest points
+         It defines the self.ann_i - lon,lat of the neighbor points to the nearest points
          """
          self.i_pos   = np.array(indx)/im.max().astype('int') #lon indexes from the coarser grid
          self.j_pos   = np.array(indx)%im.max().astype('int') #lat indexes from the coarser grid
@@ -64,4 +72,3 @@ class model_nesting(object):
          f = np.array([[i[0],i[1]] for i in  e])
 
          return f
-
