@@ -4,7 +4,7 @@ It is written in Python.
 
 It requires:
   >netcdf model output (coarser\_grid\_output directory):
-      model coordinates indexes
+     >model coordinates indexes
       model coordinates
       temperature results
       salinity results
