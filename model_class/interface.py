@@ -15,7 +15,6 @@ class eta(eta_interface,model_nesting,interpolations,secom_nc):
         model_nesting.__init__(self)
         interpolations.__init__(self)
         secom_nc.__init__(self)
-        self.boundaries_nearest_neighbors()
 
 
     def boundaries_nearest_neighbors(self):
@@ -26,6 +25,7 @@ class eta(eta_interface,model_nesting,interpolations,secom_nc):
 
     def eta_values(self):
         """ """
+        self.boundaries_nearest_neighbors()
         x  = self.c('lon')[self.ann_i[:,0],self.ann_i[:,1]]
         y  = self.c('lat')[self.ann_i[:,0],self.ann_i[:,1]]
 
@@ -40,10 +40,10 @@ class eta(eta_interface,model_nesting,interpolations,secom_nc):
     def eta_values_homog(self):
         """ """
 
-        self.etaI1 = self.etaI1*0
-        self.etaJ1 = self.etaJ1*0
-        self.etaI0 = self.etaI0*0
-        self.etaJ1 = self.etaJ1*0
+        self.etaI1 = np.array(self.etaI1)*0
+        self.etaJ1 = np.array(self.etaJ1)*0
+        self.etaI0 = np.array(self.etaI0)*0
+        self.etaJ1 = np.array(self.etaJ1)*0
         self.define_eta_boundaries_array_i() # self.EBDRY is defined here
         for i in [0,725]:
             self.eta_boundaries_values(self.EBDRY,[i])
@@ -56,9 +56,9 @@ class TS_boundaries(TS_interface,secom_nc,model_nesting,interpolations):
         TS_interface.__init__(self,f_name,ndepths)
         model_nesting.__init__(self)
         secom_nc.__init__(self)
-        self.boundaries_nearest_neighbors()
 
     def TS_values(self):
+        self.boundaries_nearest_neighbors()
         x = self.c('lon')[self.ann_i[:,0],self.ann_i[:,1]]
         y = self.c('lat')[self.ann_i[:,0],self.ann_i[:,1]]
         z = self.f_xr['layer_bnds'].data
@@ -72,6 +72,18 @@ class TS_boundaries(TS_interface,secom_nc,model_nesting,interpolations):
         self.SBDRYSL = self.interpolate_in_depth(z,nz,var1)
 
         self.write_TS_boundaries(self.ITAS,self.JTAS,self.TBDRYSL,self.SBDRYSL)
+        self.file_close()
+
+    def TS_values_homog(self,ndepths):
+        self.define_TS_boundaries_i()
+        self.define_TS_values(ndepths)
+        self.define_TS_boundaries()
+        T = np.ones(ndepths)*20
+        S = np.ones(ndepths)*35
+        self.TBDRYSL, self.SBDRYSL = self.define_TS_values_homog(T,S,ndepths)
+
+        for i in [0,725]:
+            self.TS_boundaries_values(self.ITAS,self.JTAS,self.TBDRYSL, self.SBDRYSL,i)
         self.file_close()
 
     def boundaries_nearest_neighbors(self):
