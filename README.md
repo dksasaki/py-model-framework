@@ -1,12 +1,24 @@
 # py-model-framework 
-This framework creates the input data of the model.
+This framework creates the input data for a model.
 
-The required libraries are numpy, matplotlib, xray and basemap.
+It requires:
+  netcdf model output (coarser\_grid\_output directory):
+    model coordinates indexes
+    model coordinates
+    temperature results
+    salinity results
+    eta results
 
-The horizontally homogenous, vertically stratified initial TS fields are ok.
+  model\_grid (input\_data directory):
+    model\_grid file (see ECOMSED manual):
+      model_grid requires all the points in the i,j domain 
 
-The horizontally homoegeous, vertically stratified initial TS boundaries are ok.
+It is possible (for eta and TS):
+  to nest data from the netcdf model output into the model\_grid boundaries and initial\_conditions.
+  to create homogenous boundaries. 
 
-Eta boundaries are ok.
+Time changing nesting will be implemented
 
-Nesting classes are being written.
+The required libraries are numpy, matplotlib, xray, basemap, scipy.
+
+
