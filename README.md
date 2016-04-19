@@ -1,6 +1,6 @@
 # py-model-framework 
 This framework creates the input data for a model.\
-It is written in Python
+It is written in Python.
 
 It requires:\
   netcdf model output (coarser\_grid\_output directory):\
