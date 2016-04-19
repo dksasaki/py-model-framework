@@ -55,10 +55,10 @@ class boundaries(secom_model_grid):
             non- boundary gridelement)
 
         """
-        self.Imax = self.direc_max_bound(im,jn,im,dep).astype('int')
-        self.Jmax = self.direc_max_bound(im,jn,jn,dep).astype('int')
-        self.Imin = self.direc_min_bound(im,jn,im,dep).astype('int')
-        self.Jmin = self.direc_min_bound(im,jn,jn,dep).astype('int')
+        self.Imax = self.direc_max_bound(im,jn,im,dep).astype('int')[1:-1]
+        self.Jmax = self.direc_max_bound(im,jn,jn,dep).astype('int')[1:-1]
+        self.Imin = self.direc_min_bound(im,jn,im,dep).astype('int')[1:-1]
+        self.Jmin = self.direc_min_bound(im,jn,jn,dep).astype('int')[1:-1]
 
         self.ICON = self.boundaries(self.Imax,0,-1) #boundaries grid coordinate
         self.JCON = self.boundaries(self.Jmax,-1,0) #boundaries grid coordinate
@@ -67,20 +67,15 @@ class boundaries(secom_model_grid):
 
     def boundaries_coordinates(self,im,jn,lon,lat,dep):
         #boundaries coordinates [lon,lat] values
-        self.xmax = self.direc_max_bound(lon,lat,im,dep)
-        self.ymax = self.direc_max_bound(lon,lat,jn,dep)
-        self.xmin = self.direc_min_bound(lon,lat,im,dep)
-        self.ymin = self.direc_min_bound(lon,lat,jn,dep)
+        self.xmax = self.direc_max_bound(lon,lat,im,dep)[1:-1]
+        self.ymax = self.direc_max_bound(lon,lat,jn,dep)[1:-1]
+        self.xmin = self.direc_min_bound(lon,lat,im,dep)[1:-1]
+        self.ymin = self.direc_min_bound(lon,lat,jn,dep)[1:-1]
 
-        self.imax = self.direc_max_bound(im,jn,im,dep) #boundaries indexes
-        self.jmax = self.direc_max_bound(im,jn,jn,dep) #boundaries indexes
-        self.imin = self.direc_min_bound(im,jn,im,dep) #boundaries indexes
-        self.jmin = self.direc_min_bound(im,jn,jn,dep) #boundaries indexes
-
-        print self.ymin
-        for i in [self.xmax,self.ymax,self.xmin,self.ymin]:
-           if i.sum() != 0:
-                plt.plot(i[:,0], i[:,1],'.')
+        self.imax = self.direc_max_bound(im,jn,im,dep)[1:-1] #boundaries indexes
+        self.jmax = self.direc_max_bound(im,jn,jn,dep)[1:-1] #boundaries indexes
+        self.imin = self.direc_min_bound(im,jn,im,dep)[1:-1] #boundaries indexes
+        self.jmin = self.direc_min_bound(im,jn,jn,dep)[1:-1] #boundaries indexes
 
         bound = np.array(self.ymin.tolist()+self.xmin.tolist()+self.ymax.tolist()+self.xmax.tolist())
         self.xb = bound[:,0] #boundaries coordinates
