@@ -139,7 +139,7 @@ class data_group_f_2(object):
         TIME = time in hours
                0.0 for initial time
         """
-        self.f1.write('\n%10.5f\n' % i)
+        self.f1.write('%10.5f\n' % i)
 
     def write_TS_boundaries(self,ITAS,JTAS,TBDRYSL,SBDRYSL):
         """
