@@ -40,10 +40,10 @@ class eta(eta_interface,model_nesting,interpolations,secom_nc):
     def eta_values_homog(self):
         """ """
 
-        self.etaI1 = np.array(self.etaI1)*0
-        self.etaJ1 = np.array(self.etaJ1)*0
-        self.etaI0 = np.array(self.etaI1)*0
-        self.etaJ1 = np.array(self.etaJ1)*0
+        self.etaI1 = self.etaI1*0
+        self.etaJ1 = self.etaJ1*0
+        self.etaI0 = self.etaI0*0
+        self.etaJ1 = self.etaJ1*0
         self.define_eta_boundaries_array_i() # self.EBDRY is defined here
         for i in [0,725]:
             self.eta_boundaries_values(self.EBDRY,[i])
@@ -79,17 +79,6 @@ class TS_boundaries(TS_interface,secom_nc,model_nesting,interpolations):
          self.all_neigbours_nearest_i_bl(self.mdi,self.c('xpos'))
          self.all_neigbours_nearest_bl(self.c('lon'),self.c('lat'))
 
-    def TS_values_homog(self,ndepths):
-        self.define_TS_boundaries_i()
-        self.define_TS_values(ndepths)
-        self.define_TS_boundaries()
-        T = np.ones(ndepths)*20 
-        S = np.ones(ndepths)*35
-        self.TBDRYSL, self.SBDRYSL = self.define_TS_values_homog(T,S,ndepths)
-        self.comment()
-        for i in [0,725]:
-            self.TS_boundaries_values(self.ITAS,self.JTAS,self.TBDRYSL,self.SBDRYSL,i)
-        self.file_close()
 
 class TS_initial_conditions(init_tands_interface,interpolations,secom_nc,secom_model_grid):
     def __init__(self):
