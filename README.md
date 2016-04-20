@@ -2,6 +2,8 @@
 This framework creates the input data for our model.
 It is written in Python.
 
+(it follows the Don't Repeat Yourself principle when coding - DRY)
+
 #### WHAT CAN BE DONE WITH THIS FRAMEWORK?
 
 This framework creates the TS and elevation boundaries and TS initial condition of your model by:
