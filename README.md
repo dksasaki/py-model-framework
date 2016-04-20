@@ -1,5 +1,5 @@
 # py-model-framework 
-This framework creates the input data for a model.
+This framework creates the input data for our model.
 It is written in Python.
 
 ### INPUT DATA REQUIREMENTS
