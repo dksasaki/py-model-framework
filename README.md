@@ -14,7 +14,7 @@ It requires:
       model\_grid file (see ECOMSED manual):
         model_grid requires all the points in the i,j domain 
 
-If you want to install python packages in a very simple way, click here(python_install.md)
+If you want to install python packages in a very simple way, click here(docs/python_install.md)
 
 It is possible (for eta and TS):
   to nest data from the netcdf model output into the model\_grid boundaries and initial\_conditions.
