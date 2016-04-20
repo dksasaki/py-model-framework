@@ -12,7 +12,9 @@ Download the proper miniconda installer for your system (linux is awesome for th
 Using the installer file, install Miniconda
 
 >cd download_directory/
+
 >chmod +x Miniconda2-latest-Linux-x86_64.sh
+
 >./Miniconda2-latest-Linux-x86_64.sh
 
 You may choose the directory miniconda will be installed, while the script is running.
