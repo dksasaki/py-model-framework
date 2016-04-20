@@ -3,7 +3,7 @@ This framework creates the input data for a model.
 It is written in Python.
 
 It requires:
->  -netcdf model output (coarser\_grid\_output directory):
+> - netcdf model output (coarser\_grid\_output directory):
 >      model coordinates indexes
 >      model coordinates
 >      temperature results
