@@ -3,12 +3,12 @@ This framework creates the input data for a model.
 It is written in Python.
 
 It requires:
-> - netcdf model output (coarser\_grid\_output directory):
->      model coordinates indexes
->      model coordinates
->      temperature results
->      salinity results
->      eta results
+* - netcdf model output (coarser\_grid\_output directory):
+*      model coordinates indexes
+*      model coordinates
+*      temperature results
+*      salinity results
+*      eta results
 
   >model\_grid (input\_data directory):
       model\_grid file (see ECOMSED manual):
