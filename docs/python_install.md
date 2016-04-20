@@ -50,6 +50,6 @@ Finally install the desired packages (in our case ipython matplotlib basemap xra
 
 >conda install ipython matplotlib basemap xray scipy numpy
 
-### What is anaconda and virtual environment
+### What is anaconda and virtual environment?
 Don't know what is anaconda and virtual environment? Research a little bit, but you can begin at:
 <https://www.continuum.io/content/conda-data-science>
