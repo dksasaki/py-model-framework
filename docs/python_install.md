@@ -9,7 +9,7 @@ Okey, go to the following link:
 Download the proper miniconda installer for your system (linux is awesome for this)!
 
 ### Install Miniconda
-Using the installer file, install Miniconda
+On terminal, install Miniconda:
 
 >cd download_directory/
 
@@ -22,7 +22,9 @@ The following lines will appear at the end of the installation - choose yes (it'
 
 
 >Do you wish the installer to prepend the Miniconda2 install location
+
 >to PATH in your /home/otel/.bashrc ? [yes|no]
+
 >yes
 
 Close and reopen your Terminal tab (or type 'source ~/.bashrc').
