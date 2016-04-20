@@ -22,7 +22,7 @@ It is possible (for eta and TS):
 *  to nest data from the netcdf model output into the model\_grid boundaries and initial\_conditions.
 *  to create homogenous boundaries.
 
-Time changing nesting will be implemented. 
+Time changing may be done, but it requires some editting.
 
 The required libraries are numpy, matplotlib, xray, basemap, scipy. 
 
