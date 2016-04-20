@@ -2,6 +2,15 @@
 This framework creates the input data for our model.
 It is written in Python.
 
+#### WHAT CAN BE DONE WITH THIS FRAMEWORK?
+
+This framework creates the TS and elevation boundaries and TS initial condition of your model by:
+*  nesting results from the netcdf model output
+*  creating homogenous boundaries.
+
+Time changing may be done, but it requires some editting.
+
+
 #### INPUT DATA REQUIREMENTS
 It requires:
 netcdf model output (coarser\_grid\_output directory):
@@ -17,12 +26,6 @@ model\_grid (input\_data directory):
 
 If you want to install python packages in a very simple way, click [here](docs/python_install.md)
 
-#### WHAT CAN BE DONE WITH THIS FRAMEWORK?
-It is possible (for eta and TS):
-*  to nest data from the netcdf model output into the model\_grid boundaries and initial\_conditions.
-*  to create homogenous boundaries.
-
-Time changing may be done, but it requires some editting.
 
 The required libraries are numpy, matplotlib, xray, basemap, scipy. 
 
