@@ -1,6 +1,6 @@
-Short guide to install python using Virtual Environment(linux)
+#Short guide to install python using Virtual Environment(linux)
 
-1)to install python
+#####to install python
 
 Okey, go to the following link: 
 
@@ -8,7 +8,8 @@ Okey, go to the following link:
 
 Download the proper miniconda installer for your system (linux is awesome for this)!
 
-2)using the installer file, install Miniconda
+##### Install Miniconda
+Using the installer file, install Miniconda
 
 >cd download_directory/
 >chmod +x Miniconda2-latest-Linux-x86_64.sh
@@ -27,6 +28,7 @@ Now you will create a locally installed Virtual Environment using miniconda:
 
 >conda install -name YourVirtualEnvironmentName python=2.7
 
+####Activating miniconda virtual environment and installig python packages
 Okey, your YourVirtualEnvironmentName environment is ready!
 You need to activate by typing on terminal:
 
