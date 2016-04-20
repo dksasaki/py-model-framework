@@ -32,5 +32,5 @@ If you want to install python packages in a very simple way, click [here](docs/p
 The required libraries are numpy, matplotlib, xray, basemap, scipy. 
 
 #### EXAMPLES
-[model_grid1](doc/images/model_grid_1.png)
-[model_grid2](doc/images/model_grid_2.png)
+![model_grid1](doc/images/model_grid_1.png)
+![model_grid2](doc/images/model_grid_2.png)
