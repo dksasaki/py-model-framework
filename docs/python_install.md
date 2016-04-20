@@ -35,7 +35,7 @@ Now you will create a locally installed Virtual Environment using miniconda:
 
 >conda install -name YourVirtualEnvironmentName python=2.7
 
-###ACTIVATE MINICONDA VIRTUAL ENVIRONMENT AND INSTALL PYTHON PACKAGES
+###Activating miniconda virtual environment and installing python packages
 Okey, your YourVirtualEnvironmentName environment is ready!
 
 You need to activate by typing on terminal:
