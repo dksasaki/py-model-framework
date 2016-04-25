@@ -18,7 +18,7 @@ On terminal, install Miniconda:
 
 >./Miniconda2-latest-Linux-x86_64.sh
 
-You may choose the directory miniconda will be installed, while the script is running.
+while the script is running, you may choose the directory where miniconda will be installed.
 
 The following lines will appear at the end of the installation - choose yes (it's a little more simple).
 
