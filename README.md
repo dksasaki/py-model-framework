@@ -3,6 +3,7 @@ This framework creates the input data for our model.
 It is written in Python.
 
 (it follows the Don't Repeat Yourself principle when coding - DRY)
+Let's not code the same thing twice! :)
 
 #### WHAT CAN BE DONE WITH THIS FRAMEWORK?
 
