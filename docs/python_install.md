@@ -33,7 +33,7 @@ Close and reopen your Terminal tab (or type 'source ~/.bashrc').
 
 Now you will create a locally installed Virtual Environment using miniconda:
 
->conda install -name YourVirtualEnvironmentName python=2.7
+>conda create -n YourVirtualEnvironmentName python=2.7
 
 ###Activating miniconda virtual environment and installing python packages
 Okey, your YourVirtualEnvironmentName environment is ready!
