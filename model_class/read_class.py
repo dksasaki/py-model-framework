@@ -15,7 +15,7 @@ class secom_nc(object):
     """
 
     def __init__(self):
-        self.f_xr = xr.open_dataset('coarser_grid_input/gcmplt.cdf')
+        self.f_xr = xr.open_dataset('coarser_grid_output/gcmplt.cdf')
         self.c = lambda var :     self.f_xr[var].data #coordinates
         self.v = lambda t,d,var : self.f_xr[var][t,d,:,:].data
         self.g_mask = lambda f,m : np.ma.masked_array(f,mask = [f==m])
