@@ -99,7 +99,7 @@ class data_group_f_1(object):
         NUMEBC  =total number of elevation boundary grid elements.
         If NUMEBC = 0,then go to Data Group G (Discharge Information)
         """
-        self.NUMEBC = len(self.bounds_eta_i)/4
+        #self.NUMEBC = len(self.bounds_eta_i)/4
         self.f1.write("%5.0f DATA\n" % (self.NUMEBC))
 
     def loc_grid_elements(self):

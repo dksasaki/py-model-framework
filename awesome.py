@@ -11,12 +11,12 @@ import model_class.interface as intr
 # a1.eta_values_homog() 
 
 """creates neste TS boundaries at t=[0,725] from gcmplt.cdf"""
-# b = intr.TS_boundaries('ts')
+# b = intr.TS_boundaries('ts',15)
 # b.TS_values()
 
 """creates TS boundaries, with a given value (0 in this case)"""
- b1 = intr.TS_boundaries('ts')
- b1.TS_values_homog(7)
+b1 = intr.TS_boundaries('ts',15)
+b1.TS_values_homog(7)
 
 # """creates the initial conditions""" #TESTING!!
 # c = intr.TS_initial_conditions()

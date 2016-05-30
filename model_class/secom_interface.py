@@ -2,15 +2,10 @@ from model_class.boundaries import boundaries
 from model_class.secom_write import data_group_f_1, data_group_f_2, initial_condition
 import numpy as np
 
-class eta_interface(boundaries,data_group_f_1):
-    def __init__(self,f_name):
+class boundaries_interface(boundaries):
+    def __init__(self):
         boundaries.__init__(self)
-        data_group_f_1.__init__(self,f_name)
         self.find_boundaries()
-        self.define_eta_boundaries_array()
-        self.define_eta_boundaries_array_i()
-        self.eta_boundaries()
-
 
     def find_boundaries(self):
         """
@@ -18,8 +13,15 @@ class eta_interface(boundaries,data_group_f_1):
         """
         self.boundaries_coordinates(self.g(1),self.g(0),self.g(7),self.g(6),self.g(4))
         self.boundaries_grid(self.g(1),self.g(0),self.g(7),self.g(6),self.g(4))
-        #aux = map(self.g_T_flatten,[self.JETA,self.IETA,self.JCON,self.ICON])
-        #self.bounds_eta_i = aux[0]+aux[1]+aux[2]+aux[3]
+
+
+class eta_interface(boundaries_interface,data_group_f_1):
+    def __init__(self,f_name):
+        boundaries_interface.__init__(self)
+        data_group_f_1.__init__(self,f_name)
+        self.define_eta_boundaries_array()
+        self.define_eta_boundaries_array_i()
+        self.eta_boundaries()
 
 
     def define_eta_boundaries_array(self):
@@ -39,7 +41,7 @@ class eta_interface(boundaries,data_group_f_1):
         self.EBDRY = self.g_matrix_flat(c)
 
     def eta_boundaries(self):
-        self.find_boundaries()
+        #self.find_boundaries()
         self.define_eta_boundaries_array()
         self.number_grid_elements()
         self.loc_grid_elements()
@@ -49,21 +51,14 @@ class eta_interface(boundaries,data_group_f_1):
             self.time_observation(i)
             self.elevation_data(EBDRY)
 
-class TS_interface(boundaries,data_group_f_2):
+class TS_interface(boundaries_interface,data_group_f_2):
     def __init__(self,f_name,ndepths):
-        boundaries.__init__(self)
+        boundaries_interface.__init__(self)
         data_group_f_2.__init__(self,f_name)
-        self.find_boundaries()
+        #self.find_boundaries()
         self.define_TS_boundaries_i()
         self.define_TS_values(ndepths)
         self.define_TS_boundaries()
-
-    def find_boundaries(self):
-        """
-        find the boundaries of the model_grid file
-        """
-        self.boundaries_coordinates(self.g(1),self.g(0),self.g(7),self.g(6),self.g(4))
-        self.boundaries_grid(self.g(1),self.g(0),self.g(7),self.g(6),self.g(4))
 
     def define_TS_boundaries_i(self):
         #self.find_boundaries()
