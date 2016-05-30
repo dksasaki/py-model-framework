@@ -60,10 +60,16 @@ class boundaries(secom_model_grid):
         self.Imin = self.direc_min_bound(im,jn,im,dep).astype('int')[1:-1]
         self.Jmin = self.direc_min_bound(im,jn,jn,dep).astype('int')[1:-1]
 
+        #THOSE ARE NOT ICON,JCON,IETA,JETA (but they are important and can't be excluded)
         self.ICON = self.boundaries(self.Imax,0,-1) #boundaries grid coordinate
         self.JCON = self.boundaries(self.Jmax,-1,0) #boundaries grid coordinate
         self.IETA = self.boundaries(self.Imin,0,1) #boundaries grid coordinate
         self.JETA = self.boundaries(self.Jmin,1,0) #boundaries grid coordinate
+
+        aux = map(self.g_T_flatten,[self.JETA,self.IETA,self.JCON,self.ICON])
+        self.bounds_eta_i = aux[0]+aux[1]+aux[2]+aux[3]
+
+        self.NUMEBC = len(self.bounds_eta_i)/4
 
     def boundaries_coordinates(self,im,jn,lon,lat,dep):
         #boundaries coordinates [lon,lat] values

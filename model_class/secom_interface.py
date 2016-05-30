@@ -18,8 +18,8 @@ class eta_interface(boundaries,data_group_f_1):
         """
         self.boundaries_coordinates(self.g(1),self.g(0),self.g(7),self.g(6),self.g(4))
         self.boundaries_grid(self.g(1),self.g(0),self.g(7),self.g(6),self.g(4))
-        aux = map(self.g_T_flatten,[self.JETA,self.IETA,self.JCON,self.ICON])
-        self.bounds_eta_i = aux[0]+aux[1]+aux[2]+aux[3]
+        #aux = map(self.g_T_flatten,[self.JETA,self.IETA,self.JCON,self.ICON])
+        #self.bounds_eta_i = aux[0]+aux[1]+aux[2]+aux[3]
 
 
     def define_eta_boundaries_array(self):
