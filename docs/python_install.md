@@ -1,5 +1,16 @@
 #Short guide to install python using Virtual Environment(linux)
 
+NOTE:
+use your own words for the following attributes in the text:
+
+>yourhomefile
+
+>YourVirtualEnvironmentName
+
+>YourUser
+
+>YourMachine
+
 ### Install python
 
 Okey, go to the following link: 
