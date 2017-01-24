@@ -25,7 +25,7 @@ The following lines will appear at the end of the installation - choose yes (it'
 
 >Do you wish the installer to prepend the Miniconda2 install location
 
->to PATH in your /home/otel/.bashrc ? [yes|no]
+>to PATH in your /home/yourhomefile/.bashrc ? [yes|no]
 
 >yes
 
